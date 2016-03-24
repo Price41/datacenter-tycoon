@@ -9,7 +9,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Table(name="users")
- * @ORM\Entity(repositoryClass="AppBundle\Entity\UserRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  */
 class User implements UserInterface, \Serializable
 {
@@ -40,6 +40,21 @@ class User implements UserInterface, \Serializable
      * @ORM\Column(type="string", length=60, unique=true)
      */
     private $email;
+
+    /**
+     * @ORM\Column(name="company_name", type="string", length=60)
+     */
+    private $companyName;
+
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $balance;
+
+    /**
+     * @ORM\Column(name="research_rank", type="smallint")
+     */
+    private $researchRank;
 
     /**
      * @ORM\Column(name="is_active", type="boolean")
@@ -94,6 +109,36 @@ class User implements UserInterface, \Serializable
     public function setEmail($email)
     {
         $this->email = $email;
+    }
+
+    public function getCompanyName()
+    {
+        return $this->companyName;
+    }
+
+    public function setCompanyName($companyName)
+    {
+        $this->companyName = $companyName;
+    }
+
+    public function getBalance()
+    {
+        return $this->balance;
+    }
+
+    public function setBalance($balance)
+    {
+        $this->balance = $balance;
+    }
+
+    public function getResearchRank()
+    {
+        return $this->researchRank;
+    }
+
+    public function setResearchRank($researchRank)
+    {
+        $this->researchRank = $researchRank;
     }
 
     public function getRoles()
