@@ -50,6 +50,17 @@ class SecurityController extends Controller
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
+
+            $datacenter = new Datacenter();
+            $datacenter->setPlayer($user);
+            $typeDatacenter = $em->getRepository('AppBundle:TypeDatacenter')->find(1);
+            $datacenter->setTypeDatacenter($typeDatacenter);
+            $typeElectricity = $em->getRepository('AppBundle:TypeElectricity')->find(1);
+            $datacenter->setTypeElectricity($typeElectricity);
+            $typeInternet = $em->getRepository('AppBundle:TypeInternet')->find(1);
+            $datacenter->setTypeInternet($typeInternet);
+
+            $em->persist($datacenter);
             $em->flush();
 
             return $this->redirectToRoute('dashboard');

@@ -11,7 +11,7 @@ class DashboardController extends Controller
     /**
      * @Route("/dashboard", name="dashboard")
      */
-    public function displayAction()
+    public function indexAction()
     {
         $user = $this->getUser()->getUsername();
         $session = $this->get('session');
