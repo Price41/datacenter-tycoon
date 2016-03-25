@@ -22,9 +22,6 @@ class Offer
     private $id;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="player", type="integer")
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -44,39 +41,14 @@ class Offer
      */
     private $price;
 
-
     /**
      * Get id
      *
-     * @return int
+     * @return integer
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set player
-     *
-     * @param integer $player
-     *
-     * @return Offer
-     */
-    public function setPlayer($player)
-    {
-        $this->player = $player;
-
-        return $this;
-    }
-
-    /**
-     * Get player
-     *
-     * @return int
-     */
-    public function getPlayer()
-    {
-        return $this->player;
     }
 
     /**
@@ -125,5 +97,29 @@ class Offer
     public function getPrice()
     {
         return $this->price;
+    }
+
+    /**
+     * Set player
+     *
+     * @param \AppBundle\Entity\User $player
+     *
+     * @return Offer
+     */
+    public function setPlayer(\AppBundle\Entity\User $player)
+    {
+        $this->player = $player;
+
+        return $this;
+    }
+
+    /**
+     * Get player
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getPlayer()
+    {
+        return $this->player;
     }
 }

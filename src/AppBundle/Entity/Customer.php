@@ -22,9 +22,6 @@ class Customer
     private $id;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="offer", type="integer")
      * @ORM\OneToOne(targetEntity="AppBundle\Entity\Offer")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -44,39 +41,14 @@ class Customer
      */
     private $quantity;
 
-
     /**
      * Get id
      *
-     * @return int
+     * @return integer
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set offer
-     *
-     * @param integer $offer
-     *
-     * @return Customer
-     */
-    public function setOffer($offer)
-    {
-        $this->offer = $offer;
-
-        return $this;
-    }
-
-    /**
-     * Get offer
-     *
-     * @return int
-     */
-    public function getOffer()
-    {
-        return $this->offer;
     }
 
     /**
@@ -120,10 +92,34 @@ class Customer
     /**
      * Get quantity
      *
-     * @return int
+     * @return integer
      */
     public function getQuantity()
     {
         return $this->quantity;
+    }
+
+    /**
+     * Set offer
+     *
+     * @param \AppBundle\Entity\Offer $offer
+     *
+     * @return Customer
+     */
+    public function setOffer(\AppBundle\Entity\Offer $offer)
+    {
+        $this->offer = $offer;
+
+        return $this;
+    }
+
+    /**
+     * Get offer
+     *
+     * @return \AppBundle\Entity\Offer
+     */
+    public function getOffer()
+    {
+        return $this->offer;
     }
 }

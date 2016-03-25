@@ -22,19 +22,15 @@ class Rack
     private $id;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="datacenter", type="integer")
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Datacenter")
      * @ORM\JoinColumn(nullable=false)
      */
     private $datacenter;
 
-
     /**
      * Get id
      *
-     * @return int
+     * @return integer
      */
     public function getId()
     {
@@ -44,11 +40,11 @@ class Rack
     /**
      * Set datacenter
      *
-     * @param integer $datacenter
+     * @param \AppBundle\Entity\Datacenter $datacenter
      *
      * @return Rack
      */
-    public function setDatacenter($datacenter)
+    public function setDatacenter(\AppBundle\Entity\Datacenter $datacenter)
     {
         $this->datacenter = $datacenter;
 
@@ -58,7 +54,7 @@ class Rack
     /**
      * Get datacenter
      *
-     * @return integer
+     * @return \AppBundle\Entity\Datacenter
      */
     public function getDatacenter()
     {

@@ -1,0 +1,70 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Server
+ *
+ * @ORM\Table(name="server")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ServerRepository")
+ */
+class Server
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Rack")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $rack;
+
+    /**
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\TypeServer")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $typeServer;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="usage_cpu", type="integer")
+     */
+    private $usageCpu;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="usage_ram", type="integer")
+     */
+    private $usageRam;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="usage_hdd", type="integer")
+     */
+    private $usageHdd;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="usage_lan", type="integer")
+     */
+    private $usageLan;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="usage_wan", type="integer")
+     */
+    private $usageWan;
+}

@@ -22,18 +22,12 @@ class Server
     private $id;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="id_rack", type="integer")
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Rack")
      * @ORM\JoinColumn(nullable=false)
      */
     private $rack;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="id_type_server", type="integer")
      * @ORM\OneToOne(targetEntity="AppBundle\Entity\TypeServer")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -74,11 +68,10 @@ class Server
      */
     private $usageWan;
 
-
     /**
      * Get id
      *
-     * @return int
+     * @return integer
      */
     public function getId()
     {
@@ -102,7 +95,7 @@ class Server
     /**
      * Get usageCpu
      *
-     * @return int
+     * @return integer
      */
     public function getUsageCpu()
     {
@@ -112,7 +105,7 @@ class Server
     /**
      * Set usageRam
      *
-     * @param int $usageRam
+     * @param integer $usageRam
      *
      * @return Server
      */
@@ -126,7 +119,7 @@ class Server
     /**
      * Get usageRam
      *
-     * @return int
+     * @return integer
      */
     public function getUsageRam()
     {
@@ -150,7 +143,7 @@ class Server
     /**
      * Get usageHdd
      *
-     * @return int
+     * @return integer
      */
     public function getUsageHdd()
     {
@@ -174,7 +167,7 @@ class Server
     /**
      * Get usageLan
      *
-     * @return int
+     * @return integer
      */
     public function getUsageLan()
     {
@@ -198,7 +191,7 @@ class Server
     /**
      * Get usageWan
      *
-     * @return int
+     * @return integer
      */
     public function getUsageWan()
     {
@@ -208,11 +201,11 @@ class Server
     /**
      * Set rack
      *
-     * @param integer $rack
+     * @param \AppBundle\Entity\Rack $rack
      *
      * @return Server
      */
-    public function setRack($rack)
+    public function setRack(\AppBundle\Entity\Rack $rack)
     {
         $this->rack = $rack;
 
@@ -222,7 +215,7 @@ class Server
     /**
      * Get rack
      *
-     * @return integer
+     * @return \AppBundle\Entity\Rack
      */
     public function getRack()
     {
@@ -232,11 +225,11 @@ class Server
     /**
      * Set typeServer
      *
-     * @param integer $typeServer
+     * @param \AppBundle\Entity\TypeServer $typeServer
      *
      * @return Server
      */
-    public function setTypeServer($typeServer)
+    public function setTypeServer(\AppBundle\Entity\TypeServer $typeServer)
     {
         $this->typeServer = $typeServer;
 
@@ -246,7 +239,7 @@ class Server
     /**
      * Get typeServer
      *
-     * @return integer
+     * @return \AppBundle\Entity\TypeServer
      */
     public function getTypeServer()
     {
