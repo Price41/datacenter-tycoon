@@ -25,27 +25,35 @@ class Datacenter
      * @var int
      *
      * @ORM\Column(name="player", type="integer")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $player;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="typeDatacenter", type="integer")
+     * @ORM\Column(name="type_datacenter", type="integer")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\TypeDatacenter")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $typeDatacenter;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="typeElectricity", type="integer")
+     * @ORM\Column(name="type_electricity", type="integer")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\TypeElectricity")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $typeElectricity;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="typeInternet", type="integer")
+     * @ORM\Column(name="type_internet", type="integer")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\TypeInternet")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $typeInternet;
 
@@ -156,4 +164,3 @@ class Datacenter
         return $this->typeInternet;
     }
 }
-
