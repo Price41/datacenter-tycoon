@@ -13,10 +13,10 @@ class DashboardController extends Controller
      */
     public function indexAction()
     {
-        $user = $this->getUser()->getUsername();
+        $user = $this->getUser();
         $session = $this->get('session');
-        $session->set('username', $user);
+        $session->set('username', $user->getUsername());
 
-        return $this->render('dashboard/index.html.twig', array('user' => $user));
+        return $this->render('dashboard/index.html.twig');
     }
 }

@@ -4,6 +4,9 @@
 <h1>Dashboard</h1>
 <h2><a href="{{ path('logout') }}">Logout</a></h2>
 <p>
-    Welcome {{ user }} !
+    Welcome <strong>{{ app.user.username }}</strong> !<br/>
+    Name of your company : {{ app.user.companyName }}<br/>
+    Balance : {{ app.user.balance }} €<br/>
+    Research rank : {{ app.user.researchRank }}
 </p>
 {% endblock %}

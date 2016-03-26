@@ -45,7 +45,7 @@ class SecurityController extends Controller
                 ->encodePassword($user, $user->getPlainPassword());
             $user->setPassword($password);
 
-            $user->setBalance(0);
+            $user->setBalance(1000);
             $user->setResearchRank(0);
 
             $em = $this->getDoctrine()->getManager();
