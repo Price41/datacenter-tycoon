@@ -45,6 +45,16 @@ class Datacenter
      */
     private $typeInternet;
 
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Rack", mappedBy="datacenter")
+     */
+    private $racks;
+
+
+    public function __construct()
+    {
+        $this->racks = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -150,5 +160,22 @@ class Datacenter
     public function getTypeInternet()
     {
         return $this->typeInternet;
+    }
+
+    public function addRack(Rack $rack)
+    {
+        $this->racks[] = $rack;
+
+        return $this;
+    }
+
+    public function removeRack(Rack $rack)
+    {
+        $this->racks->removeElement($rack);
+    }
+
+    public function getRacks()
+    {
+        return $this->racks;
     }
 }

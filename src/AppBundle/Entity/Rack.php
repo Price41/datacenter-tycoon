@@ -22,10 +22,21 @@ class Rack
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Datacenter")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Datacenter", inversedBy="racks")
      * @ORM\JoinColumn(nullable=false)
      */
     private $datacenter;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Server", mappedBy="rack")
+     */
+    private $servers;
+
+
+    public function __construct()
+    {
+        $this->servers = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -59,5 +70,22 @@ class Rack
     public function getDatacenter()
     {
         return $this->datacenter;
+    }
+
+    public function addServer(Server $server)
+    {
+        $this->servers[] = $server;
+
+        return $this;
+    }
+
+    public function removeServer(Server $server)
+    {
+        $this->servers->removeElement($server);
+    }
+
+    public function getServers()
+    {
+        return $this->servers;
     }
 }

@@ -22,13 +22,13 @@ class Server
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Rack")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Rack", inversedBy="servers")
      * @ORM\JoinColumn(nullable=false)
      */
     private $rack;
 
     /**
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\TypeServer")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\TypeServer")
      * @ORM\JoinColumn(nullable=false)
      */
     private $typeServer;
