@@ -17,6 +17,11 @@ class DashboardController extends Controller
         $session = $this->get('session');
         $session->set('username', $user->getUsername());
 
-        return $this->render('dashboard/index.html.twig');
+        $em = $this->getDoctrine()->getManager();
+        $datacenters = $em->getRepository('AppBundle:Datacenter')->findByPlayer($user);
+
+        return $this->render('dashboard/index.html.twig', array(
+            'datacenters' => $datacenters
+        ));
     }
 }

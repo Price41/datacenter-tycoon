@@ -9,4 +9,25 @@
     Balance : {{ app.user.balance }} €<br/>
     Research rank : {{ app.user.researchRank }}
 </p>
+{% for datacenter in datacenters %}
+    <h2>Datacenter</h2>
+    <p>
+        Type : {{ datacenter.typeDatacenter.name }} (max rack number : {{ datacenter.typeDatacenter.maxRack }})<br/>
+        Max power : {{ datacenter.typeElectricity.power }} W<br/>
+        Internet speed : {{ datacenter.typeInternet.speed }} Mbps
+    </p>
+    {% for rack in datacenter.racks %}
+        <h3>Rack</h3>
+        {% for server in rack.servers %}
+            <h4>Server</h4>
+            <p>
+                CPU usage : {{ server.usageCpu }} MHz<br/>
+                RAM usage : {{ server.usageRam }} MB<br/>
+                HDD usage : {{ server.usageHdd }} GB<br/>
+                LAN usage : {{ server.usageLan }} Mbps<br/>
+                WAN usage : {{ server.usageWan}} Mbps
+            </p>
+        {% endfor %}
+    {% endfor %}
+{% endfor %}
 {% endblock %}
