@@ -84,6 +84,13 @@ class TypeServer
      */
     private $buyingCost;
 
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="height", type="integer")
+     */
+    private $height;
+
 
     /**
      * Get id
@@ -309,5 +316,29 @@ class TypeServer
     public function getBuyingCost()
     {
         return $this->buyingCost;
+    }
+
+    /**
+     * Set height
+     *
+     * @param integer $height
+     *
+     * @return TypeServer
+     */
+    public function setHeight($height)
+    {
+        $this->height = $height;
+
+        return $this;
+    }
+
+    /**
+     * Get height
+     *
+     * @return integer
+     */
+    public function getHeight()
+    {
+        return $this->height;
     }
 }
