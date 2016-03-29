@@ -12,7 +12,7 @@ class ServerCommand extends ContainerAwareCommand
     {
         $this
             ->setName('dct:server')
-            ->setDescription('Start the DCT server')
+            ->setDescription('Start the DCT WebSocket server')
         ;
     }
 

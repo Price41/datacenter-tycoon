@@ -25,9 +25,23 @@
                 RAM usage : {{ server.usageRam }} MB<br/>
                 HDD usage : {{ server.usageHdd }} GB<br/>
                 LAN usage : {{ server.usageLan }} Mbps<br/>
-                WAN usage : {{ server.usageWan}} Mbps
+                WAN usage : {{ server.usageWan }} Mbps
             </p>
         {% endfor %}
     {% endfor %}
 {% endfor %}
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+var conn = new WebSocket('ws://172.16.0.9:8080');
+conn.onopen = function(e) {
+    console.log("Connection established!");
+};
+
+conn.onmessage = function(e) {
+    console.log(e.data);
+    var data = JSON.parse(e.data);
+};
+</script>
 {% endblock %}
