@@ -48,7 +48,8 @@ class WorkerCommand extends ContainerAwareCommand
 
             foreach ($workerData['datacenters'] as $idDatacenter => $value)
             {
-                $kwh = $value['power'] * (10/60) / 1000; // kWH used in 10 minutes
+                // kWh used in 10 minutes
+                $kwh = $value['power'] * (10/60) / 1000;
                 if($predis->exists('dc'.$idDatacenter.'_kwh'))
                 {
                     $datacenterKWh = $predis->get('dc'.$idDatacenter.'_kwh');
@@ -58,15 +59,18 @@ class WorkerCommand extends ContainerAwareCommand
                 $data['datacenters'][$idDatacenter]['kwh'] = number_format($kwh, 3);
             }
 
-            $date->add(new \DateInterval('PT10M')); // Time += 10 minutes at each iteration
+            // Time += 10 minutes at each iteration
+            $date->add(new \DateInterval('PT10M'));
             $predis->set('date', $date->format('Y-m-d H:i:s'));
 
             $jsonencode = json_encode($data);
             $socket->send($jsonencode);
 
             $timeEnd = microtime(true);
-            $output->writeln(number_format($timeEnd - $timeStart, 4) * 1000 . ' ms');
             usleep(1000000 - ($timeEnd - $timeStart) * 1000000);
+            $timeEndSleep = microtime(true);
+            $output->writeln(number_format($timeEnd - $timeStart, 4) * 1000 .
+                ' ms => ' . number_format($timeEndSleep - $timeStart, 4) * 1000 . ' ms total');
         }
     }
 }
