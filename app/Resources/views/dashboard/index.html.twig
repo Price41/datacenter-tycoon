@@ -3,6 +3,7 @@
 {% block body %}
 <h1>Dashboard</h1>
 <h2><a href="{{ path('logout') }}">Logout</a></h2>
+<p>Date : <span id="date"></span></p>
 <p>
     Welcome <strong>{{ app.user.username }}</strong> !<br/>
     Name of your company : {{ app.user.companyName }}<br/>
@@ -25,7 +26,8 @@
                 RAM usage : {{ server.usageRam }} MB<br/>
                 HDD usage : {{ server.usageHdd }} GB<br/>
                 LAN usage : {{ server.usageLan }} Mbps<br/>
-                WAN usage : {{ server.usageWan }} Mbps
+                WAN usage : {{ server.usageWan }} Mbps<br/>
+                Power consumption : <span id="server{{ server.id }}_power">0</span> W
             </p>
         {% endfor %}
     {% endfor %}
@@ -42,6 +44,10 @@ conn.onopen = function(e) {
 conn.onmessage = function(e) {
     console.log(e.data);
     var data = JSON.parse(e.data);
+    document.getElementById("date").innerHTML = data.date;
+    for (var key in data.servers) {
+        document.getElementById("server"+key+"_power").innerHTML = data.servers[key].power;
+    }
 };
 </script>
 {% endblock %}

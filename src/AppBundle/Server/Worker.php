@@ -4,22 +4,25 @@ namespace AppBundle\Server;
 
 class Worker
 {
-    public function updateServer($serverIds)
+    public function updateServer($servers, $date)
     {
         $data = [];
 
-        foreach ($serverIds as $serverId)
+        foreach ($servers as $server)
         {
-            $data[] = "WIP";
+            $consumption = $server->getTypeServer()->getConsumption();
+            // Minimum power consumption = 15 % of maximum power consumption
+            $power = $this->getInstantPower($consumption, $consumption * 0.15, $date);
+            $data[$server->getId()] = ['power' => $power];
         }
 
         return $data;
     }
 
-    private function getInstantPower($maxpower, $minpower, $time)
+    private function getInstantPower($maxpower, $minpower, $date)
     {
-        $hours = $time->format('H');
-        $minutes = $time->format('i');
+        $hours = $date->format('H');
+        $minutes = $date->format('i');
         $minutes = $minutes / 60;
         $decimalHour = $hours + $minutes;
 
