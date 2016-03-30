@@ -34,18 +34,35 @@ class WorkerCommand extends ContainerAwareCommand
         {
             $timeStart = microtime(true);
 
+            $data = [];
             $date = new \DateTime($predis->get('date'));
             $data['date'] = $date->format('Y-m-d H:i:s');
 
             //$servers = $em->getRepository('AppBundle:Server')->findByIds([3, 4]);
             $servers = $em->getRepository('AppBundle:Server')->findAll();
-            $data['servers'] = $worker->updateServer($servers, $date);
+            $workerData = $worker->updateServer($servers, $date);
+
+            $data['date'] = $date->format('Y-m-d H:i:s');
+            $data['servers'] = $workerData['servers'];
+            $data['datacenters'] = [];
+
+            foreach ($workerData['datacenters'] as $idDatacenter => $value)
+            {
+                $kwh = $value['power'] * (10/60) / 1000; // kWH used in 10 minutes
+                if($predis->exists('dc'.$idDatacenter.'_kwh'))
+                {
+                    $datacenterKWh = $predis->get('dc'.$idDatacenter.'_kwh');
+                    $kwh += $datacenterKWh;
+                }
+                $predis->set('dc'.$idDatacenter.'_kwh', $kwh);
+                $data['datacenters'][$idDatacenter]['kwh'] = number_format($kwh, 3);
+            }
+
+            $date->add(new \DateInterval('PT10M')); // Time += 10 minutes at each iteration
+            $predis->set('date', $date->format('Y-m-d H:i:s'));
 
             $jsonencode = json_encode($data);
             $socket->send($jsonencode);
-
-            $date->add(new \DateInterval('PT10M'));
-            $predis->set('date', $date->format('Y-m-d H:i:s'));
 
             $timeEnd = microtime(true);
             $output->writeln(number_format($timeEnd - $timeStart, 4) * 1000 . ' ms');
