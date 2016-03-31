@@ -42,11 +42,11 @@ class Customer
     private $quantity;
 
     /**
-     * @var int
+     * @var DateTime
      *
-     * @ORM\Column(name="pay_day", type="integer")
+     * @ORM\Column(name="subscription_date", type="datetime")
      */
-    private $payDay;
+    private $subscriptionDate;
 
     /**
      * Get id
@@ -107,27 +107,27 @@ class Customer
     }
 
     /**
-     * Set payDay
+     * Set subscriptionDate
      *
-     * @param integer $payDay
+     * @param DateTime $subscriptionDate
      *
      * @return Customer
      */
-    public function setPayDay($payDay)
+    public function setSubscriptionDate($subscriptionDate)
     {
-        $this->payDay = $payDay;
+        $this->subscriptionDate = $subscriptionDate;
 
         return $this;
     }
 
     /**
-     * Get payDay
+     * Get subscriptionDate
      *
-     * @return integer
+     * @return DateTime
      */
-    public function getPayDay()
+    public function getSubscriptionDate()
     {
-        return $this->payDay;
+        return $this->subscriptionDate;
     }
 
     /**
