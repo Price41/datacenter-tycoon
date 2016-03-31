@@ -16,7 +16,8 @@
         Type : {{ datacenter.typeDatacenter.name }} (max rack number : {{ datacenter.typeDatacenter.maxRack }})<br/>
         Max power : {{ datacenter.typeElectricity.power }} W<br/>
         Power used : <span id="datacenter{{ datacenter.id }}_kwh"></span> kWh<br/>
-        Internet speed : {{ datacenter.typeInternet.speed }} Mbps
+        Internet speed : {{ datacenter.typeInternet.speed }} Mbps<br/>
+        Internet bandwidth usage : <span id="datacenter{{ datacenter.id }}_wanUsage"></span> Mbps
     </p>
     {% for rack in datacenter.racks %}
         <h3>Rack</h3>
@@ -27,7 +28,7 @@
                 RAM usage : {{ server.usageRam }} MB<br/>
                 HDD usage : {{ server.usageHdd }} GB<br/>
                 LAN usage : {{ server.usageLan }} Mbps<br/>
-                WAN usage : {{ server.usageWan }} Mbps<br/>
+                WAN usage : <span id="server{{ server.id }}_wanUsage">{{ server.usageWan }}</span> Mbps<br/>
                 Power consumption : <span id="server{{ server.id }}_power">0</span> W
             </p>
         {% endfor %}
@@ -48,9 +49,11 @@ conn.onmessage = function(e) {
     document.getElementById("date").innerHTML = data.date;
     for (var key in data.datacenters) {
         document.getElementById("datacenter"+key+"_kwh").innerHTML = data.datacenters[key].kwh;
+        document.getElementById("datacenter"+key+"_wanUsage").innerHTML = data.datacenters[key].wan_usage;
     }
     for (var key in data.servers) {
         document.getElementById("server"+key+"_power").innerHTML = data.servers[key].power;
+        document.getElementById("server"+key+"_wanUsage").innerHTML = data.servers[key].wan_usage;
     }
 };
 </script>

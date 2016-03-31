@@ -57,6 +57,7 @@ class WorkerCommand extends ContainerAwareCommand
                 }
                 $predis->set('dc'.$idDatacenter.'_kwh', $kwh);
                 $data['datacenters'][$idDatacenter]['kwh'] = number_format($kwh, 3);
+                $data['datacenters'][$idDatacenter]['wan_usage'] = number_format($value['wan_usage'], 1);
             }
 
             // Time += 10 minutes at each iteration
