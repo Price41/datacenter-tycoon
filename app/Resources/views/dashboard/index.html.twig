@@ -15,9 +15,10 @@
     <p>
         Type : {{ datacenter.typeDatacenter.name }} (max rack number : {{ datacenter.typeDatacenter.maxRack }})<br/>
         Max power : {{ datacenter.typeElectricity.power }} W<br/>
+        Power usage : <span id="datacenter{{ datacenter.id }}_powerUsage">0</span> W<br/>
         Power used : <span id="datacenter{{ datacenter.id }}_kwh"></span> kWh<br/>
         Internet speed : {{ datacenter.typeInternet.speed }} Mbps<br/>
-        Internet bandwidth usage : <span id="datacenter{{ datacenter.id }}_wanUsage"></span> Mbps
+        Internet bandwidth usage : <span id="datacenter{{ datacenter.id }}_wanUsage">0</span> Mbps
     </p>
     {% for rack in datacenter.racks %}
         <h3>Rack</h3>
@@ -48,6 +49,7 @@ conn.onmessage = function(e) {
     var data = JSON.parse(e.data);
     document.getElementById("date").innerHTML = data.date;
     for (var key in data.datacenters) {
+        document.getElementById("datacenter"+key+"_powerUsage").innerHTML = data.datacenters[key].power_usage;
         document.getElementById("datacenter"+key+"_kwh").innerHTML = data.datacenters[key].kwh;
         document.getElementById("datacenter"+key+"_wanUsage").innerHTML = data.datacenters[key].wan_usage;
     }

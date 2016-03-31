@@ -56,6 +56,8 @@ class WorkerCommand extends ContainerAwareCommand
                     $kwh += $datacenterKWh;
                 }
                 $predis->set('dc'.$idDatacenter.'_kwh', $kwh);
+
+                $data['datacenters'][$idDatacenter]['power_usage'] = number_format($value['power']);
                 $data['datacenters'][$idDatacenter]['kwh'] = number_format($kwh, 3);
                 $data['datacenters'][$idDatacenter]['wan_usage'] = number_format($value['wan_usage'], 1);
             }
