@@ -42,6 +42,13 @@ class Customer
     private $quantity;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="pay_day", type="integer")
+     */
+    private $payDay;
+
+    /**
      * Get id
      *
      * @return integer
@@ -97,6 +104,30 @@ class Customer
     public function getQuantity()
     {
         return $this->quantity;
+    }
+
+    /**
+     * Set payDay
+     *
+     * @param integer $payDay
+     *
+     * @return Customer
+     */
+    public function setPayDay($payDay)
+    {
+        $this->payDay = $payDay;
+
+        return $this;
+    }
+
+    /**
+     * Get payDay
+     *
+     * @return integer
+     */
+    public function getPayDay()
+    {
+        return $this->payDay;
     }
 
     /**
