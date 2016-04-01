@@ -20,6 +20,8 @@
         Internet speed : {{ datacenter.typeInternet.speed }} Mbps<br/>
         Internet bandwidth usage : <span id="datacenter{{ datacenter.id }}_wanUsage">0</span> Mbps
     </p>
+    <div id="datacenter{{ datacenter.id }}_powerGauge" class="gauge"></div>
+    <div id="datacenter{{ datacenter.id }}_wanGauge" class="gauge"></div>
     {% for rack in datacenter.racks %}
         <h3>Rack</h3>
         {% for server in rack.servers %}
@@ -38,7 +40,34 @@
 {% endblock %}
 
 {% block javascripts %}
+<script src="{{ asset('js/raphael-2.1.4.min.js') }}"></script>
+<script src="{{ asset('js/justgage.js') }}"></script>
+
 <script type="text/javascript">
+var gauges = [];
+
+{% for datacenter in datacenters %}
+gauges[{{ datacenter.id }}] = [];
+gauges[{{ datacenter.id }}]['power'] = new JustGage({
+    id: "datacenter{{ datacenter.id }}_powerGauge",
+    value: 0,
+    min: 0,
+    max: {{ datacenter.typeElectricity.power }},
+    title: "Power usage",
+    formatNumber: true
+});
+gauges[{{ datacenter.id }}]['wan'] = new JustGage({
+    id: "datacenter{{ datacenter.id }}_wanGauge",
+    value: 0,
+    min: 0,
+    max: {{ datacenter.typeInternet.speed }},
+    title: "Internet usage",
+    formatNumber: true,
+    decimals: 1
+});
+{% endfor %}
+
+
 var conn = new WebSocket('ws://172.16.0.9:8080');
 conn.onopen = function(e) {
     console.log("Connection established!");
@@ -47,12 +76,17 @@ conn.onopen = function(e) {
 conn.onmessage = function(e) {
     console.log(e.data);
     var data = JSON.parse(e.data);
+
     document.getElementById("date").innerHTML = data.date;
+
     for (var key in data.datacenters) {
         document.getElementById("datacenter"+key+"_powerUsage").innerHTML = data.datacenters[key].power_usage;
         document.getElementById("datacenter"+key+"_kwh").innerHTML = data.datacenters[key].kwh;
         document.getElementById("datacenter"+key+"_wanUsage").innerHTML = data.datacenters[key].wan_usage;
+        gauges[key]['power'].refresh(data.datacenters[key].power_usage);
+        gauges[key]['wan'].refresh(data.datacenters[key].wan_usage);
     }
+
     for (var key in data.servers) {
         document.getElementById("server"+key+"_power").innerHTML = data.servers[key].power;
         document.getElementById("server"+key+"_wanUsage").innerHTML = data.servers[key].wan_usage;
