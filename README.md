@@ -7,6 +7,7 @@ Warning : This game is a Work In Progress !
 
 ## Requirements
 * A classic LAMP (Linux, Apache, MySQL, PHP) configuration
+* Install php5-dev and libzmq3-dev packages : ```sudo apt-get install php5-dev libzmq3-dev```
 * PHP ZeroMQ extension. You will probably need to install [PHP-Pear](https://pear.php.net/manual/en/installation.php) first.
   * ```sudo pecl install zmq-beta```,
   * Then add ```extension=zmq.so``` to your php.ini file
