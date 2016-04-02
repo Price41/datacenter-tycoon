@@ -20,8 +20,8 @@
         Internet speed : {{ datacenter.typeInternet.speed }} Mbps<br/>
         Internet bandwidth usage : <span id="datacenter{{ datacenter.id }}_wanUsage">0</span> Mbps
     </p>
-    <div id="datacenter{{ datacenter.id }}_powerGauge" class="gauge"></div>
-    <div id="datacenter{{ datacenter.id }}_wanGauge" class="gauge"></div>
+    <!--<div id="datacenter{{ datacenter.id }}_powerGauge" class="gauge"></div>
+    <div id="datacenter{{ datacenter.id }}_wanGauge" class="gauge"></div>-->
     {% for rack in datacenter.racks %}
         <h3>Rack</h3>
         {% for server in rack.servers %}
@@ -47,7 +47,7 @@
 var gauges = [];
 
 {% for datacenter in datacenters %}
-gauges[{{ datacenter.id }}] = [];
+/*gauges[{{ datacenter.id }}] = [];
 gauges[{{ datacenter.id }}]['power'] = new JustGage({
     id: "datacenter{{ datacenter.id }}_powerGauge",
     value: 0,
@@ -64,7 +64,7 @@ gauges[{{ datacenter.id }}]['wan'] = new JustGage({
     title: "Internet usage",
     formatNumber: true,
     decimals: 1
-});
+});*/
 {% endfor %}
 
 
@@ -83,8 +83,8 @@ conn.onmessage = function(e) {
         document.getElementById("datacenter"+key+"_powerUsage").innerHTML = data.datacenters[key].power_usage;
         document.getElementById("datacenter"+key+"_kwh").innerHTML = data.datacenters[key].kwh;
         document.getElementById("datacenter"+key+"_wanUsage").innerHTML = data.datacenters[key].wan_usage;
-        gauges[key]['power'].refresh(data.datacenters[key].power_usage);
-        gauges[key]['wan'].refresh(data.datacenters[key].wan_usage);
+        /*gauges[key]['power'].refresh(data.datacenters[key].power_usage);
+        gauges[key]['wan'].refresh(data.datacenters[key].wan_usage);*/
     }
 
     for (var key in data.servers) {
