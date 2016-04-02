@@ -26,7 +26,7 @@ class LoadTypeServerData implements FixtureInterface
 
         $typeServerS = new TypeServer();
         $typeServerS->setName('S');
-        $typeServerS->setCpuNumber(4);
+        $typeServerS->setCpuNumber(2);
         $typeServerS->setCpuCores(4);
         $typeServerS->setCpuHT(1);
         $typeServerS->setCpuFreq(2000);
