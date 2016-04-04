@@ -18,6 +18,9 @@ class ServerCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $websocketIp = $this->getContainer()->getParameter('ws_server_ip');
+        $websocketPort = $this->getContainer()->getParameter('ws_server_port');
+
         $loop   = \React\EventLoop\Factory::create();
         $server = new \AppBundle\Server\Server();
 
@@ -27,7 +30,7 @@ class ServerCommand extends ContainerAwareCommand
         $pull->on('message', array($server, 'send'));
 
         $webSock = new \React\Socket\Server($loop);
-        $webSock->listen(8080, '0.0.0.0');
+        $webSock->listen($websocketPort, $websocketIp);
         $webServer = new \Ratchet\Server\IoServer(
             new \Ratchet\Http\HttpServer(
                 new \Ratchet\WebSocket\WsServer(

@@ -68,7 +68,7 @@ gauges[{{ datacenter.id }}]['wan'] = new JustGage({
 {% endfor %}
 
 
-var conn = new WebSocket('ws://172.16.0.9:8080');
+var conn = new WebSocket('ws://{{ ws_server_ip }}:{{ ws_server_port }}');
 conn.onopen = function(e) {
     console.log("Connection established!");
 };

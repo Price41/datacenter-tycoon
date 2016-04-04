@@ -21,7 +21,9 @@ class DashboardController extends Controller
         $datacenters = $em->getRepository('AppBundle:Datacenter')->findByPlayer($user);
 
         return $this->render('dashboard/index.html.twig', array(
-            'datacenters' => $datacenters
+            'datacenters' => $datacenters,
+            'ws_server_ip' => $this->getParameter('ws_server_ip'),
+            'ws_server_port' => $this->getParameter('ws_server_port')
         ));
     }
 }
