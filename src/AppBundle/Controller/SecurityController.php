@@ -54,11 +54,11 @@ class SecurityController extends Controller
 
             $datacenter = new Datacenter();
             $datacenter->setPlayer($user);
-            $typeDatacenter = $em->getRepository('AppBundle:TypeDatacenter')->find(1);
+            $typeDatacenter = $em->getRepository('AppBundle:TypeDatacenter')->findOneByName('Garage');
             $datacenter->setTypeDatacenter($typeDatacenter);
-            $typeElectricity = $em->getRepository('AppBundle:TypeElectricity')->find(1);
+            $typeElectricity = $em->getRepository('AppBundle:TypeElectricity')->findOneByPower(7500);
             $datacenter->setTypeElectricity($typeElectricity);
-            $typeInternet = $em->getRepository('AppBundle:TypeInternet')->find(1);
+            $typeInternet = $em->getRepository('AppBundle:TypeInternet')->findOneBySpeed(20);
             $datacenter->setTypeInternet($typeInternet);
 
             $em->persist($datacenter);
