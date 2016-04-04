@@ -35,6 +35,12 @@ class WorkerCommand extends ContainerAwareCommand
             $timeStart = microtime(true);
 
             $data = [];
+
+            if(!$predis->exists('date'))
+            {
+                $d = new \DateTime('now');
+                $predis->set('date', $d->format('Y-m-d 0:0:0'));
+            }
             $date = new \DateTime($predis->get('date'));
             $data['date'] = $date->format('Y-m-d H:i:s');
 
