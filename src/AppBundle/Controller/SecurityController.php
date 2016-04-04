@@ -5,6 +5,8 @@ namespace AppBundle\Controller;
 use AppBundle\Form\UserType;
 use AppBundle\Entity\User;
 use AppBundle\Entity\Datacenter;
+use AppBundle\Entity\Rack;
+use AppBundle\Entity\Server;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -60,8 +62,23 @@ class SecurityController extends Controller
             $datacenter->setTypeElectricity($typeElectricity);
             $typeInternet = $em->getRepository('AppBundle:TypeInternet')->findOneBySpeed(20);
             $datacenter->setTypeInternet($typeInternet);
-
             $em->persist($datacenter);
+
+            $rack = new Rack();
+            $rack->setDatacenter($datacenter);
+            $em->persist($rack);
+
+            $server = new Server();
+            $typeServer = $em->getRepository('AppBundle:TypeServer')->findOneByName('XS');
+            $server->setTypeServer($typeServer);
+            $server->setUsageCpu(0);
+            $server->setUsageRam(0);
+            $server->setUsageHdd(0);
+            $server->setUsageLan(0);
+            $server->setUsageWan(0);
+            $server->setRack($rack);
+            $em->persist($server);
+
             $em->flush();
 
             return $this->redirectToRoute('dashboard');
