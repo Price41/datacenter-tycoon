@@ -40,6 +40,7 @@ class ServerCommand extends ContainerAwareCommand
             $webSock
         );
 
+        echo "WebSocket server started\n";
         $loop->run();
     }
 }

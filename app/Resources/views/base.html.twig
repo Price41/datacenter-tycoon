@@ -1,14 +1,55 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>{% block title %}DataCenter Tycoon{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-        <link href="{{ asset('css/main.css') }}" rel="stylesheet" />
-    </head>
-    <body>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}DataCenter Tycoon{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/main.css') }}" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar navbar-fixed-top navbar-dark bg-primary">
+            <a class="navbar-brand" href="#">Datacenter Tycoon</a>
+            <ul class="nav navbar-nav">
+                {% if not app.user %}
+                <li class="nav-item {% if app.request.attributes.get('_route') == 'homepage' %}active{% endif %}">
+                    <a class="nav-link" href="{{ path('homepage') }}">Home</a>
+                </li>
+                <li class="nav-item {% if app.request.attributes.get('_route') == 'login' %}active{% endif %}">
+                    <a class="nav-link" href="{{ path('login') }}">Login</a>
+                </li>
+                <li class="nav-item {% if app.request.attributes.get('_route') == 'register' %}active{% endif %}">
+                    <a class="nav-link" href="{{ path('register') }}">Registration</a>
+                </li>
+                {% else %}
+                <li class="nav-item {% if app.request.attributes.get('_route') == 'dashboard' %}active{% endif %}">
+                    <a class="nav-link" href="{{ path('dashboard') }}">Dashboard</a>
+                </li>
+                <li class="nav-item {% if app.request.attributes.get('_route') == 'logout' %}active{% endif %}">
+                    <a class="nav-link" href="{{ path('logout') }}">Logout</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+
+    <div class="container">
         {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
+    </div>
+
+    {% block javascripts %}{% endblock %}
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <!--<script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>-->
+
+</body>
 </html>
