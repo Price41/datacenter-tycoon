@@ -2,7 +2,12 @@
 
 {% block body %}
 {% if error %}
-    <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    <div class="alert alert-danger alert-dismissible fade in" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <strong>Error: </strong> {{ error.messageKey|trans(error.messageData, 'security') }}
+    </div>
 {% endif %}
 
 <form action="{{ path('login') }}" method="post">
@@ -14,4 +19,10 @@
 
     <button type="submit">login</button>
 </form>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+    window.setTimeout(function() { $(".alert").alert('close'); }, 5000);
+</script>
 {% endblock %}
