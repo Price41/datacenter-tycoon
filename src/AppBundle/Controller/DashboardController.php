@@ -15,6 +15,7 @@ class DashboardController extends Controller
     {
         $user = $this->getUser();
         $session = $this->get('session');
+        $session->set('user_id', $user->getId());
         $session->set('username', $user->getUsername());
 
         $em = $this->getDoctrine()->getManager();

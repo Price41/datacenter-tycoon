@@ -26,8 +26,10 @@ class ServerCommand extends ContainerAwareCommand
         $websocketIp = $this->getContainer()->getParameter('ws_server_ip');
         $websocketPort = $this->getContainer()->getParameter('ws_server_port');
 
+        $session = $this->getContainer()->get('session');
+
         $loop   = \React\EventLoop\Factory::create();
-        $server = new \AppBundle\Server\Server();
+        $server = new \AppBundle\Server\Server($session);
 
         $memcached = new \Memcached;
         $memcached->addServer('localhost', 11211);

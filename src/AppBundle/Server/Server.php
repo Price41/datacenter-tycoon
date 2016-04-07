@@ -8,16 +8,20 @@ use Ratchet\ConnectionInterface;
 class Server implements MessageComponentInterface
 {
     protected $clients;
+    protected $session;
 
-    public function __construct()
+    public function __construct($session)
     {
         $this->clients = new \SplObjectStorage;
+        $this->session = $session;
     }
 
     public function onOpen(ConnectionInterface $conn)
     {
         $this->clients->attach($conn);
         echo "New connection! ({$conn->resourceId})\n";
+        $this->session->setId($conn->WebSocket->request->getCookie(ini_get('session.name')));
+        echo 'Hello '.$this->session->get('username').' (id: '.$this->session->get('user_id').") !\n";
     }
 
     public function onMessage(ConnectionInterface $from, $msg)
@@ -48,7 +52,8 @@ class Server implements MessageComponentInterface
 
     public function send($entry)
     {
-        foreach ($this->clients as $client) {
+        foreach ($this->clients as $client)
+        {
             $client->send($entry);
         }
     }
