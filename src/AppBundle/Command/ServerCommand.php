@@ -37,7 +37,7 @@ class ServerCommand extends ContainerAwareCommand
         $context = new \React\ZMQ\Context($loop);
         $pull = $context->getSocket(\ZMQ::SOCKET_PULL);
         $pull->bind('tcp://127.0.0.1:5555');
-        $pull->on('message', array($server, 'send'));
+        $pull->on('message', array($server, 'sendData'));
 
         $webSock = new \React\Socket\Server($loop);
         $webSock->listen($websocketPort, $websocketIp);

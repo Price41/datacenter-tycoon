@@ -43,29 +43,48 @@ class WorkerCommand extends ContainerAwareCommand
             }
             $date = new \DateTime($predis->get('date'));
             $data['date'] = $date->format('Y-m-d H:i:s');
+            $data['users'] = [];
 
-            //$servers = $em->getRepository('AppBundle:Server')->findByIds([3, 4]);
-            $servers = $em->getRepository('AppBundle:Server')->findAll();
-            $workerData = $worker->updateServer($servers, $date);
-
-            $data['date'] = $date->format('Y-m-d H:i:s');
-            $data['servers'] = $workerData['servers'];
-            $data['datacenters'] = [];
-
-            foreach ($workerData['datacenters'] as $idDatacenter => $value)
+            $users = $em->getRepository('AppBundle:User')->findAll();
+            foreach ($users as $user)
             {
-                // kWh used in 10 minutes
-                $kwh = $value['power'] * (10/60) / 1000;
-                if($predis->exists('dc'.$idDatacenter.'_kwh'))
+                $userData['datacenters'] = [];
+                foreach ($user->getDatacenters() as $datacenter)
                 {
-                    $datacenterKWh = $predis->get('dc'.$idDatacenter.'_kwh');
-                    $kwh += $datacenterKWh;
-                }
-                $predis->set('dc'.$idDatacenter.'_kwh', $kwh);
+                    $datacenterData['racks'] = [];
 
-                $data['datacenters'][$idDatacenter]['power_usage'] = number_format($value['power']);
-                $data['datacenters'][$idDatacenter]['kwh'] = number_format($kwh, 3);
-                $data['datacenters'][$idDatacenter]['wan_usage'] = number_format($value['wan_usage'], 1);
+                    foreach ($datacenter->getRacks() as $rack)
+                    {
+                        if(!isset($datacenterData['racks'][$rack->getId()])) {
+                            $datacenterData['racks'][$rack->getId()] = [];
+                        }
+                        $rackData = [];
+                        $workerData = $worker->updateServer($rack->getServers(), $date);
+
+                        $rackData['servers'] = $workerData['servers'];
+                        /*$data['datacenters'] = [];*/
+
+                        foreach ($workerData['datacenters'] as $idDatacenter => $value)
+                        {
+                            // kWh used in 10 minutes
+                            $kwh = $value['power'] * (10/60) / 1000;
+                            if($predis->exists('dc'.$idDatacenter.'_kwh'))
+                            {
+                                $datacenterKWh = $predis->get('dc'.$idDatacenter.'_kwh');
+                                $kwh += $datacenterKWh;
+                            }
+                            $predis->set('dc'.$idDatacenter.'_kwh', $kwh);
+
+                            $datacenterData['power_usage'] = number_format($value['power']);
+                            $datacenterData['kwh'] = number_format($kwh, 3);
+                            $datacenterData['wan_usage'] = number_format($value['wan_usage'], 1);
+                        }
+
+                        $datacenterData['racks'][$rack->getId()] = $rackData;
+                    }
+                    $userData['datacenters'][$datacenter->getId()] = $datacenterData;
+                }
+                $data['users'][$user->getId()] = $userData;
             }
 
             // Time += 10 minutes at each iteration
