@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -61,9 +62,15 @@ class User implements UserInterface, \Serializable
      */
     private $isActive;
 
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Datacenter", mappedBy="player")
+     */
+    private $datacenters;
+
     public function __construct()
     {
         $this->isActive = true;
+        $this->datacenters = new ArrayCollection();
     }
 
     public function getUsername()
@@ -202,5 +209,22 @@ class User implements UserInterface, \Serializable
     public function getIsActive()
     {
         return $this->isActive;
+    }
+
+    public function addDatacenter(Datacenter $datacenter)
+    {
+        $this->datacenters[] = $datacenter;
+
+        return $this;
+    }
+
+    public function removeDatacenter(Datacenter $datacenter)
+    {
+        $this->datacenters->removeElement($datacenter);
+    }
+
+    public function getDatacenters()
+    {
+        return $this->datacenters;
     }
 }

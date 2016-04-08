@@ -23,7 +23,7 @@ class Datacenter
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="datacenters")
      * @ORM\JoinColumn(nullable=false)
      */
     private $player;
