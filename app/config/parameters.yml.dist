@@ -18,5 +18,10 @@ parameters:
     ws_server_ip:   ~
     ws_server_port: 8080
 
+    session_memcached_host:     127.0.0.1
+    session_memcached_port:     11211
+    session_memcached_prefix:   sess
+    session_memcached_expire:   3600
+
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
