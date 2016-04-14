@@ -43,6 +43,8 @@
 <script src="{{ asset('js/raphael-2.1.4.min.js') }}"></script>
 <script src="{{ asset('js/justgage.js') }}"></script>
 
+{{ ws_client() }}
+
 <script type="text/javascript">
 var gauges = [];
 
@@ -67,7 +69,7 @@ gauges[{{ datacenter.id }}]['wan'] = new JustGage({
 });
 {% endfor %}
 
-
+/*
 var conn = new WebSocket('ws://{{ ws_server_ip }}:{{ ws_server_port }}');
 conn.onopen = function(e) {
     console.log("Connection established!");
@@ -83,8 +85,8 @@ conn.onmessage = function(e) {
         document.getElementById("datacenter"+dcKey+"_powerUsage").innerHTML = data.datacenters[dcKey].power_usage;
         document.getElementById("datacenter"+dcKey+"_kwh").innerHTML = data.datacenters[dcKey].kwh;
         document.getElementById("datacenter"+dcKey+"_wanUsage").innerHTML = data.datacenters[dcKey].wan_usage;
-        gauges[key]['power'].refresh(data.datacenters[key].power_usage);
-        gauges[key]['wan'].refresh(data.datacenters[key].wan_usage);
+        gauges[dcKey]['power'].refresh(data.datacenters[dcKey].power_usage);
+        gauges[dcKey]['wan'].refresh(data.datacenters[dcKey].wan_usage);
         for(var rackKey in data.datacenters[dcKey].racks) {
             for (var srvKey in data.datacenters[dcKey].racks[rackKey].servers) {
                 document.getElementById("server"+srvKey+"_power").innerHTML = data.datacenters[dcKey].racks[rackKey].servers[srvKey].power;
@@ -93,5 +95,28 @@ conn.onmessage = function(e) {
         }
     }
 };
+*/
+
+var webSocket = WS.connect("ws://{{ ws_server_ip }}:{{ ws_server_port }}");
+
+webSocket.on("socket/connect", function(session){
+    //session is an Autobahn JS WAMP session.
+
+    console.log("Successfully Connected!");
+
+    //the callback function in "subscribe" is called everytime an event is published in that channel.
+    session.subscribe("player/channel", function(uri, payload){
+        console.log("Received message", payload.msg);
+    });
+
+    session.publish("player/channel", "This is a message!");
+})
+
+webSocket.on("socket/disconnect", function(error){
+    //error provides us with some insight into the disconnection: error.reason and error.code
+
+    console.log("Disconnected for " + error.reason + " with code " + error.code);
+})
+
 </script>
 {% endblock %}

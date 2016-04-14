@@ -17,3 +17,6 @@ services:
     session.handler.memcached:
         class:     Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler
         arguments: ["@session.memcached", { prefix: %session_memcached_prefix%, expiretime: %session_memcached_expire% }]
+
+    websocket.player_topic:
+        class: AppBundle\Topic\PlayerTopic

@@ -59,3 +59,21 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
+
+# WebSocket Configuration
+gos_web_socket:
+    server:
+        port: "%ws_server_port%"
+        host: "%ws_server_ip%"
+        router:
+            resources:
+                - "@AppBundle/Resources/pubsub/routing.yml"
+    topics:
+        - "@websocket.player_topic"
+
+# Assetic Configuration
+assetic:
+    debug:          '%kernel.debug%'
+    use_controller: '%kernel.debug%'
+    filters:
+        cssrewrite: ~

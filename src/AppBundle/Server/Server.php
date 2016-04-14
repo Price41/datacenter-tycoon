@@ -20,10 +20,11 @@ class Server implements MessageComponentInterface
     {
         $this->clients->attach($conn);
         echo "New connection! ({$conn->resourceId})\n";
-        $this->session->setId($conn->WebSocket->request->getCookie(ini_get('session.name')));
-        $this->session->all();
-        echo 'Hello '.$this->session->get('username').' (id: '.$this->session->get('user_id').")!\n";
-        //echo var_dump($conn->Session->all());
+        echo $conn->WebSocket->request->getCookie(ini_get('session.name')) . "\n";
+        //$this->session->setId($conn->WebSocket->request->getCookie(ini_get('session.name')));
+        //$this->session->all();
+        //echo 'Hello '.$this->session->get('username').' (id: '.$this->session->get('user_id').")!\n";
+        echo var_dump($conn->Session->all());
     }
 
     public function onMessage(ConnectionInterface $from, $msg)
@@ -59,10 +60,9 @@ class Server implements MessageComponentInterface
             $dataReceived = json_decode($entry, true);
 
             $dataToSend['date'] = $dataReceived['date'];
-            $dataToSend['datacenters'] = $dataReceived['users'][$client->Session->get('user_id')]['datacenters'];
+            $dataToSend['datacenters'] = $dataReceived['users'][1]['datacenters'];
 
             $json = json_encode($dataToSend);
-            //echo var_dump($client->Session->all());
             $client->send($json);
         }
     }
