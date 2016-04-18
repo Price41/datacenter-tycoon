@@ -60,6 +60,19 @@ swiftmailer:
     password:  "%mailer_password%"
     spool:     { type: memory }
 
+
+snc_redis:
+    clients:
+        cache:
+            type: predis
+            alias: cache
+            dsn: redis://127.0.0.1/2
+            logging: %kernel.debug%
+            options:
+                profile: 2.2
+                connection_timeout: 10
+                read_write_timeout: 30
+
 # WebSocket Configuration
 gos_web_socket:
     server:
@@ -68,8 +81,15 @@ gos_web_socket:
         router:
             resources:
                 - "@AppBundle/Resources/pubsub/routing.yml"
+    client:
+        firewall: main
+        session_handler: "@session.handler.memcached"
+        storage:
+            driver: "@gos_web_scocket.client_storage.driver.predis"
     topics:
         - "@websocket.player_topic"
+
+
 
 # Assetic Configuration
 assetic:

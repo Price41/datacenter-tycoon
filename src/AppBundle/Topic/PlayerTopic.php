@@ -2,13 +2,24 @@
 
 namespace AppBundle\Topic;
 
+use Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface;
+use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
-use Gos\Bundle\WebSocketBundle\Router\WampRequest;
 
 class PlayerTopic implements TopicInterface
 {
+    protected $clientManipulator;
+
+    /**
+     * @param ClientManipulatorInterface $clientManipulator
+     */
+    public function __construct(ClientManipulatorInterface $clientManipulator)
+    {
+        $this->clientManipulator = $clientManipulator;
+    }
+
     /**
      * This will receive any Subscription requests for this topic.
      *
@@ -19,6 +30,7 @@ class PlayerTopic implements TopicInterface
      */
     public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
     {
+        $user = $this->clientManipulator->getClient($connection);
         //this will broadcast the message to ALL subscribers of this topic.
         $topic->broadcast(['msg' => $connection->resourceId . " has joined " . $topic->getId()]);
     }
@@ -36,7 +48,6 @@ class PlayerTopic implements TopicInterface
         //this will broadcast the message to ALL subscribers of this topic.
         $topic->broadcast(['msg' => $connection->resourceId . " has left " . $topic->getId()]);
     }
-
 
     /**
      * This will receive any Publish requests for this topic.

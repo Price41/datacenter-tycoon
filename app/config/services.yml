@@ -18,5 +18,12 @@ services:
         class:     Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler
         arguments: ["@session.memcached", { prefix: %session_memcached_prefix%, expiretime: %session_memcached_expire% }]
 
+    gos_web_scocket.client_storage.driver.predis:
+        class: Gos\Bundle\WebSocketBundle\Client\Driver\PredisDriver
+        arguments:
+            - "@snc_redis.cache"
+
     websocket.player_topic:
         class: AppBundle\Topic\PlayerTopic
+        arguments:
+            - "@gos_web_socket.websocket.client_manipulator"
