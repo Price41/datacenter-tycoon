@@ -105,11 +105,11 @@ webSocket.on("socket/connect", function(session){
     console.log("Successfully Connected!");
 
     //the callback function in "subscribe" is called everytime an event is published in that channel.
-    session.subscribe("player/channel", function(uri, payload){
+    session.subscribe("player/channel/{{ app.user.id }}", function(uri, payload){
         console.log("Received message", payload.msg);
     });
 
-    session.publish("player/channel", "This is a message!");
+    session.publish("player/channel/{{ app.user.id }}", "This is a message!");
 })
 
 webSocket.on("socket/disconnect", function(error){

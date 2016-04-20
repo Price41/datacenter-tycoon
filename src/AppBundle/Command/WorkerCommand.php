@@ -97,8 +97,8 @@ class WorkerCommand extends ContainerAwareCommand
             $timeEnd = microtime(true);
             usleep(1000000 - ($timeEnd - $timeStart) * 1000000);
             $timeEndSleep = microtime(true);
-            /*$output->writeln(number_format($timeEnd - $timeStart, 4) * 1000 .
-                ' ms => ' . number_format($timeEndSleep - $timeStart, 4) * 1000 . ' ms total');*/
+            $output->writeln(number_format($timeEnd - $timeStart, 4) * 1000 .
+                ' ms => ' . number_format($timeEndSleep - $timeStart, 4) * 1000 . ' ms total');
         }
     }
 }

@@ -31,8 +31,13 @@ class PlayerTopic implements TopicInterface
     public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
     {
         $user = $this->clientManipulator->getClient($connection);
-        //this will broadcast the message to ALL subscribers of this topic.
-        $topic->broadcast(['msg' => $connection->resourceId . " has joined " . $topic->getId()]);
+
+        if('player/channel/'.$user->getId() != $topic->getId()) {
+            $connection->event($topic->getId(), ['msg' => 'Error ! Access forbidden !']);
+            $connection->close();
+        }
+
+        $connection->event($topic->getId(), ['msg' => 'Welcome ' . $user->getUsername() . ' !']);
     }
 
     /**
@@ -69,9 +74,11 @@ class PlayerTopic implements TopicInterface
                //shout something to all subs.
         */
 
-        $topic->broadcast([
+        /*$topic->broadcast([
             'msg' => $event,
-        ]);
+        ]);*/
+
+        $connection->event($topic->getId(), ['msg' => $event]);
     }
 
     /**

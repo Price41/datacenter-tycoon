@@ -1,4 +1,0 @@
-player_topic:
-    channel: player/channel
-    handler:
-        callback: 'player.topic' #related to the getName() of your topic

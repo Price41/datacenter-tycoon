@@ -1,4 +1,7 @@
 player_topic:
-    channel: player/channel
+    channel: player/channel/{user_id}
     handler:
         callback: 'player.topic' #related to the getName() of your topic
+    requirements:
+        user_id:
+            pattern: '\d+'
