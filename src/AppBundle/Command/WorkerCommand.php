@@ -22,11 +22,8 @@ class WorkerCommand extends ContainerAwareCommand
         \Predis\Autoloader::register();
         $predis = new \Predis\Client();
 
-        $zmqcontext = new \ZMQContext();
-        $socket = $zmqcontext->getSocket(\ZMQ::SOCKET_PUSH);
-        $socket->connect('tcp://localhost:5555');
-
         $em = $this->getContainer()->get('doctrine')->getManager();
+        $pusher = $this->getContainer()->get('gos_web_socket.zmq.pusher');
 
         $worker = new Worker($em);
 
@@ -42,8 +39,10 @@ class WorkerCommand extends ContainerAwareCommand
                 $predis->set('date', $d->format('Y-m-d 0:0:0'));
             }
             $date = new \DateTime($predis->get('date'));
-            $data['date'] = $date->format('Y-m-d H:i:s');
-            $data['users'] = [];
+
+            // Time += 10 minutes at each iteration
+            $date->add(new \DateInterval('PT10M'));
+            $predis->set('date', $date->format('Y-m-d H:i:s'));
 
             $users = $em->getRepository('AppBundle:User')->findAll();
             foreach ($users as $user)
@@ -84,15 +83,11 @@ class WorkerCommand extends ContainerAwareCommand
                     }
                     $userData['datacenters'][$datacenter->getId()] = $datacenterData;
                 }
-                $data['users'][$user->getId()] = $userData;
+                $data = $userData;
+                $data['date'] = $date->format('Y-m-d H:i:s');
+                $jsonencode = json_encode($data);
+                $pusher->push($jsonencode, 'player_topic', ['user_id'=> $user->getId()]);
             }
-
-            // Time += 10 minutes at each iteration
-            $date->add(new \DateInterval('PT10M'));
-            $predis->set('date', $date->format('Y-m-d H:i:s'));
-
-            $jsonencode = json_encode($data);
-            $socket->send($jsonencode);
 
             $timeEnd = microtime(true);
             usleep(1000000 - ($timeEnd - $timeStart) * 1000000);

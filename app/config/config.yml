@@ -88,6 +88,13 @@ gos_web_socket:
             driver: "@gos_web_scocket.client_storage.driver.predis"
     topics:
         - "@websocket.player_topic"
+    pushers:
+        zmq:
+            default: true
+            host: 127.0.0.1
+            port: 5555
+            persistent: true
+            protocol: tcp
 
 
 

@@ -4,11 +4,12 @@ namespace AppBundle\Topic;
 
 use Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
+use Gos\Bundle\WebSocketBundle\Topic\PushableTopicInterface;
 use Gos\Bundle\WebSocketBundle\Topic\TopicInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\Topic;
 
-class PlayerTopic implements TopicInterface
+class PlayerTopic implements TopicInterface, PushableTopicInterface
 {
     protected $clientManipulator;
 
@@ -79,6 +80,17 @@ class PlayerTopic implements TopicInterface
         ]);*/
 
         $connection->event($topic->getId(), ['msg' => $event]);
+    }
+
+    /**
+     * @param Topic        $topic
+     * @param WampRequest  $request
+     * @param array|string $data
+     * @param string       $provider The name of pusher who push the data
+     */
+    public function onPush(Topic $topic, WampRequest $request, $data, $provider)
+    {
+        $topic->broadcast($data);
     }
 
     /**
