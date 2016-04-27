@@ -68,33 +68,6 @@ gauges[{{ datacenter.id }}]['wan'] = new JustGage({
 });
 {% endfor %}
 
-/*
-var conn = new WebSocket('ws://{{ ws_server_ip }}:{{ ws_server_port }}');
-conn.onopen = function(e) {
-    console.log("Connection established!");
-};
-
-conn.onmessage = function(e) {
-    console.log(e.data);
-    var data = JSON.parse(e.data);
-
-    document.getElementById("date").innerHTML = data.date;
-
-    for (var dcKey in data.datacenters) {
-        document.getElementById("datacenter"+dcKey+"_powerUsage").innerHTML = data.datacenters[dcKey].power_usage;
-        document.getElementById("datacenter"+dcKey+"_kwh").innerHTML = data.datacenters[dcKey].kwh;
-        document.getElementById("datacenter"+dcKey+"_wanUsage").innerHTML = data.datacenters[dcKey].wan_usage;
-        gauges[dcKey]['power'].refresh(data.datacenters[dcKey].power_usage);
-        gauges[dcKey]['wan'].refresh(data.datacenters[dcKey].wan_usage);
-        for(var rackKey in data.datacenters[dcKey].racks) {
-            for (var srvKey in data.datacenters[dcKey].racks[rackKey].servers) {
-                document.getElementById("server"+srvKey+"_power").innerHTML = data.datacenters[dcKey].racks[rackKey].servers[srvKey].power;
-                document.getElementById("server"+srvKey+"_wanUsage").innerHTML = data.datacenters[dcKey].racks[rackKey].servers[srvKey].wan_usage;
-            }
-        }
-    }
-};
-*/
 
 var webSocket = WS.connect("ws://{{ ws_server_ip }}:{{ ws_server_port }}");
 
