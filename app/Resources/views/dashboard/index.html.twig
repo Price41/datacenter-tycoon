@@ -10,32 +10,41 @@
     Research rank : {{ app.user.researchRank }}
 </p>
 {% for datacenter in datacenters %}
-    <h2>Datacenter</h2>
+<h2>Datacenter</h2>
+<p>
+    Type : {{ datacenter.typeDatacenter.name }} (max rack number : {{ datacenter.typeDatacenter.maxRack }})<br/>
+    Max power : {{ datacenter.typeElectricity.power }} W<br/>
+    Power usage : <span id="datacenter{{ datacenter.id }}_powerUsage">0</span> W<br/>
+    Power used : <span id="datacenter{{ datacenter.id }}_kwh"></span> kWh<br/>
+    Internet speed : {{ datacenter.typeInternet.speed }} Mbps<br/>
+    Internet bandwidth usage : <span id="datacenter{{ datacenter.id }}_wanUsage">0</span> Mbps
+</p>
+<div id="datacenter{{ datacenter.id }}_powerGauge" class="gauge"></div>
+<div id="datacenter{{ datacenter.id }}_wanGauge" class="gauge"></div>
+
+{% for rack in datacenter.racks %}
+<div class="row">
+<div class="col-md-6">
+    <h3>Rack</h3>
+    {% for server in rack.servers %}
+    <h4>Server</h4>
     <p>
-        Type : {{ datacenter.typeDatacenter.name }} (max rack number : {{ datacenter.typeDatacenter.maxRack }})<br/>
-        Max power : {{ datacenter.typeElectricity.power }} W<br/>
-        Power usage : <span id="datacenter{{ datacenter.id }}_powerUsage">0</span> W<br/>
-        Power used : <span id="datacenter{{ datacenter.id }}_kwh"></span> kWh<br/>
-        Internet speed : {{ datacenter.typeInternet.speed }} Mbps<br/>
-        Internet bandwidth usage : <span id="datacenter{{ datacenter.id }}_wanUsage">0</span> Mbps
+        CPU usage : {{ server.usageCpu }} MHz<br/>
+        RAM usage : {{ server.usageRam }} MB<br/>
+        HDD usage : {{ server.usageHdd }} GB<br/>
+        LAN usage : {{ server.usageLan }} Mbps<br/>
+        WAN usage : <span id="server{{ server.id }}_wanUsage">{{ server.usageWan }}</span> Mbps<br/>
+        Power consumption : <span id="server{{ server.id }}_power">0</span> W
     </p>
-    <div id="datacenter{{ datacenter.id }}_powerGauge" class="gauge"></div>
-    <div id="datacenter{{ datacenter.id }}_wanGauge" class="gauge"></div>
-    {% for rack in datacenter.racks %}
-        <h3>Rack</h3>
-        {% for server in rack.servers %}
-            <h4>Server</h4>
-            <p>
-                CPU usage : {{ server.usageCpu }} MHz<br/>
-                RAM usage : {{ server.usageRam }} MB<br/>
-                HDD usage : {{ server.usageHdd }} GB<br/>
-                LAN usage : {{ server.usageLan }} Mbps<br/>
-                WAN usage : <span id="server{{ server.id }}_wanUsage">{{ server.usageWan }}</span> Mbps<br/>
-                Power consumption : <span id="server{{ server.id }}_power">0</span> W
-            </p>
-        {% endfor %}
     {% endfor %}
+</div>
+<div class="col-md-6">
+    <canvas id="rack{{ rack.id }}" width="220" height="600"></canvas>
+</div>
+</div>
 {% endfor %}
+{% endfor %}
+
 {% endblock %}
 
 {% block javascripts %}
@@ -93,12 +102,46 @@ webSocket.on("socket/connect", function(session){
                 }
             }
         }
+        drawRack(data);
     });
 })
 
 webSocket.on("socket/disconnect", function(error){
     console.log("Disconnected for " + error.reason + " with code " + error.code);
 })
+
+var rackLoaded = false;
+var rack = new Image();
+rack.src = '{{ asset('img/rack.png') }}';
+rack.onload = function(){
+    rackLoaded = true;
+}
+
+var serverLoaded = false;
+var server = new Image();
+server.src = '{{ asset('img/server.png') }}'
+server.onload = function(){
+    serverLoaded = true;
+}
+
+function drawRack(data) {
+    if(rackLoaded && serverLoaded) {
+        for (var dcKey in data.datacenters) {
+            for(var rackKey in data.datacenters[dcKey].racks) {
+                var ctx = document.getElementById('rack'+rackKey).getContext('2d');
+                ctx.drawImage(rack, 0, 0);
+                var nbServers = 0;
+                for (var srvKey in data.datacenters[dcKey].racks[rackKey].servers) {
+                    nbServers++;
+                }
+                for(i = 0; i < nbServers; i++) {
+                    ctx.drawImage(server, 32, 528 - 12 * i, 155, 12);
+                }
+            }
+        }
+    }
+}
+
 
 </script>
 {% endblock %}
