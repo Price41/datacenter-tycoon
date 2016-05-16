@@ -12,7 +12,7 @@
 <p>
     Welcome <strong>{{ app.user.username }}</strong> !<br/>
     Name of your company : {{ app.user.companyName }}<br/>
-    Balance : {{ app.user.balance }} €<br/>
+    Balance : <span id="balance">{{ app.user.balance }}</span> €<br/>
     Research rank : {{ app.user.researchRank }}
 </p>
 {% for datacenter in datacenters %}
@@ -94,6 +94,7 @@ webSocket.on("socket/connect", function(session){
         var data = JSON.parse(payload);
 
         document.getElementById("date").innerHTML = data.date;
+        document.getElementById("balance").innerHTML = data.balance;
 
         for (var dcKey in data.datacenters) {
             document.getElementById("datacenter"+dcKey+"_powerUsage").innerHTML = data.datacenters[dcKey].power_usage;

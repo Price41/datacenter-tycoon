@@ -5,7 +5,6 @@ namespace AppBundle\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use AppBundle\Server\Worker;
 
 class WorkerCommand extends ContainerAwareCommand
 {
@@ -25,7 +24,7 @@ class WorkerCommand extends ContainerAwareCommand
         $em = $this->getContainer()->get('doctrine')->getManager();
         $pusher = $this->getContainer()->get('gos_web_socket.zmq.pusher');
 
-        $worker = new Worker($em);
+        $lastIncomeDate = '';
 
         while(true)
         {
@@ -47,10 +46,14 @@ class WorkerCommand extends ContainerAwareCommand
             $users = $em->getRepository('AppBundle:User')->findAll();
             foreach ($users as $user)
             {
+                $userData = [];
                 $userData['datacenters'] = [];
                 foreach ($user->getDatacenters() as $datacenter)
                 {
                     $datacenterData['racks'] = [];
+                    $datacenterData['power_usage'] = 0;
+                    $datacenterData['kwh'] = 0;
+                    $datacenterData['wan_usage'] = 0;
 
                     foreach ($datacenter->getRacks() as $rack)
                     {
@@ -58,30 +61,55 @@ class WorkerCommand extends ContainerAwareCommand
                             $datacenterData['racks'][$rack->getId()] = [];
                         }
                         $rackData = [];
-                        $workerData = $worker->updateServer($rack->getServers(), $date);
 
-                        $rackData['servers'] = $workerData['servers'];
-                        /*$data['datacenters'] = [];*/
-
-                        foreach ($workerData['datacenters'] as $idDatacenter => $value)
+                        foreach ($rack->getServers() as $server)
                         {
-                            // kWh used in 10 minutes
-                            $kwh = $value['power'] * (10/60) / 1000;
-                            if($predis->exists('dc'.$idDatacenter.'_kwh'))
-                            {
-                                $datacenterKWh = $predis->get('dc'.$idDatacenter.'_kwh');
-                                $kwh += $datacenterKWh;
-                            }
-                            $predis->set('dc'.$idDatacenter.'_kwh', $kwh);
+                            $serverId = $server->getId();
+                            $consumption = $server->getTypeServer()->getConsumption();
 
-                            $datacenterData['power_usage'] = number_format($value['power']);
-                            $datacenterData['kwh'] = number_format($kwh, 3);
-                            $datacenterData['wan_usage'] = number_format($value['wan_usage'], 1);
+                            // Minimum power consumption = 15 % of maximum power consumption
+                            $power = $this->getInstantPower($consumption, $consumption * 0.15, $date);
+                            $wanUsage = $this->getInstantWanUsage(10, 1, $date);
+
+                            $rackData['servers'][$serverId] = [
+                                'power' => number_format($power, 0),
+                                'wan_usage' => number_format($wanUsage, 1)
+                            ];
+
+                            $datacenterData['power_usage'] += $power;
+                            $datacenterData['wan_usage'] += $wanUsage;
                         }
 
                         $datacenterData['racks'][$rack->getId()] = $rackData;
                     }
+
+                    // kWh used in 10 minutes
+                    $kwh = $datacenterData['power_usage'] * (10/60) / 1000;
+                    if($predis->exists('dc'.$datacenter->getId().'_kwh'))
+                    {
+                        $datacenterKWh = $predis->get('dc'.$datacenter->getId().'_kwh');
+                        $kwh += $datacenterKWh;
+                    }
+                    $predis->set('dc'.$datacenter->getId().'_kwh', $kwh);
+
+                    $datacenterData['power_usage'] = number_format($datacenterData['power_usage']);
+                    $datacenterData['kwh'] = number_format($kwh, 3);
+                    $datacenterData['wan_usage'] = number_format($datacenterData['wan_usage'], 1);
+
+                    if($date->format('d') == $date->format('t') && $lastIncomeDate != $date->format('Y-m-d'))
+                    {
+                        $electricityCost = $datacenter->getTypeElectricity()->getKwhCost() * $kwh;
+                        $userData['income'] = [
+                            "kwh_used" => $kwh,
+                            "electricity_cost" => $electricityCost
+                        ];
+                        $user->setBalance($user->getBalance() - $electricityCost);
+                        $em->flush();
+                        $predis->set('dc'.$datacenter->getId().'_kwh', 0);
+                    }
+
                     $userData['datacenters'][$datacenter->getId()] = $datacenterData;
+                    $userData['balance'] = $user->getBalance();
                 }
                 $data = $userData;
                 $data['date'] = $date->format('Y-m-d H:i:s');
@@ -89,15 +117,50 @@ class WorkerCommand extends ContainerAwareCommand
                 $pusher->push($jsonencode, 'player_topic', ['user_id'=> $user->getId()]);
             }
 
+            if($date->format('d') == $date->format('t') && $lastIncomeDate != $date->format('Y-m-d'))
+            {
+                $lastIncomeDate = $date->format('Y-m-d');
+            }
+
             $timeEnd = microtime(true);
             usleep(1000000 - ($timeEnd - $timeStart) * 1000000);
             $timeEndSleep = microtime(true);
-            
+
             if ($output->isVerbose())
             {
                 $output->writeln(number_format($timeEnd - $timeStart, 4) * 1000 .
                     ' ms => ' . number_format($timeEndSleep - $timeStart, 4) * 1000 . ' ms total');
             }
         }
+    }
+
+    private function getInstantPower($maxPower, $minPower, $date)
+    {
+        $decimalHour = $this->getDecimalHour($date);
+
+        $power = ((sin(($decimalHour/12*pi())-pi())+1)/2) * ($maxPower-$minPower) + $minPower;
+        // Random power variation +/- 10%
+        $randomOffset = rand(-10, 10);
+
+        return $power + $power * ($randomOffset / 100);
+    }
+
+    private function getInstantWanUsage($maxUsage, $minUsage, $date)
+    {
+        $decimalHour = $this->getDecimalHour($date);
+
+        $wanUsage = ((sin(($decimalHour/12*pi())-pi())+1)/2) * ($maxUsage-$minUsage) + $minUsage;
+        // Random Wan usage variation +/- 50%
+        $randomOffset = rand(-50, 50);
+
+        return $wanUsage + $wanUsage * ($randomOffset / 100);
+    }
+
+    private function getDecimalHour($date)
+    {
+        $hours = $date->format('H');
+        $minutes = $date->format('i');
+
+        return $hours + $minutes / 60;
     }
 }
