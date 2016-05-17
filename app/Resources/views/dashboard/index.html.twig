@@ -33,11 +33,12 @@
 <div class="col-md-6">
     <h3>Rack</h3>
     {% for server in rack.servers %}
+    {% set type = server.typeServer %}
     <h4>Server</h4>
     <p>
-        CPU usage : {{ server.usageCpu }} MHz<br/>
-        RAM usage : {{ server.usageRam }} MB<br/>
-        HDD usage : {{ server.usageHdd }} GB<br/>
+        CPU usage : {{ server.usageCpu }}/{{ type.cpuNumber * type.cpuCores * type.cpuHT * type.cpuFreq }} MHz<br/>
+        RAM usage : {{ server.usageRam }}/{{ type.ram * 1024 }} MB<br/>
+        HDD usage : {{ server.usageHdd }}/{{ type.hdd }} GB<br/>
         LAN usage : {{ server.usageLan }} Mbps<br/>
         WAN usage : <span id="server{{ server.id }}_wanUsage">{{ server.usageWan }}</span> Mbps<br/>
         Power consumption : <span id="server{{ server.id }}_power">0</span> W
