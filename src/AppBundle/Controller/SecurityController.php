@@ -7,6 +7,8 @@ use AppBundle\Entity\User;
 use AppBundle\Entity\Datacenter;
 use AppBundle\Entity\Rack;
 use AppBundle\Entity\Server;
+use AppBundle\Entity\Offer;
+use AppBundle\Entity\Customer;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -68,16 +70,32 @@ class SecurityController extends Controller
             $rack->setDatacenter($datacenter);
             $em->persist($rack);
 
-            $server = new Server();
-            $typeServer = $em->getRepository('AppBundle:TypeServer')->findOneByName('XS');
-            $server->setTypeServer($typeServer);
-            $server->setUsageCpu(0);
-            $server->setUsageRam(0);
-            $server->setUsageHdd(0);
-            $server->setUsageLan(0);
-            $server->setUsageWan(0);
-            $server->setRack($rack);
-            $em->persist($server);
+            for($i = 0; $i < 2; $i++)
+            {
+                $server = new Server();
+                $typeServer = $em->getRepository('AppBundle:TypeServer')->findOneByName('XS');
+                $server->setTypeServer($typeServer);
+                $server->setUsageCpu(0);
+                $server->setUsageRam(0);
+                $server->setUsageHdd(0);
+                $server->setUsageLan(0);
+                $server->setUsageWan(0);
+                $server->setRack($rack);
+                $em->persist($server);
+            }
+
+            $offer = new Offer();
+            $offer->setPlayer($user);
+            $offer->setName('Dedicated XS');
+            $offer->setPrice(40);
+            $em->persist($offer);
+
+            $customer = new Customer();
+            $customer->setOffer($offer);
+            $customer->setName('John Doe');
+            $customer->setQuantity(2);
+            $customer->setSubscriptionDate(new \DateTime('now'));
+            $em->persist($customer);
 
             $em->flush();
 
