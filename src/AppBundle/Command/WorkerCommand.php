@@ -22,6 +22,7 @@ class WorkerCommand extends ContainerAwareCommand
         $predis = new \Predis\Client();
 
         $em = $this->getContainer()->get('doctrine')->getManager();
+        $em->getConnection()->getConfiguration()->setSQLLogger(null);
         $pusher = $this->getContainer()->get('gos_web_socket.zmq.pusher');
 
         $lastIncomeDate = '';
@@ -129,7 +130,8 @@ class WorkerCommand extends ContainerAwareCommand
             if ($output->isVerbose())
             {
                 $output->writeln(number_format($timeEnd - $timeStart, 4) * 1000 .
-                    ' ms => ' . number_format($timeEndSleep - $timeStart, 4) * 1000 . ' ms total');
+                    ' ms => ' . number_format($timeEndSleep - $timeStart, 4) * 1000 . ' ms total (' .
+                    number_format(memory_get_usage()/1024/1024, 3) . ' Mo)');
             }
         }
     }
