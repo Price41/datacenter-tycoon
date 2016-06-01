@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Offer
@@ -22,7 +23,7 @@ class Offer
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="offers")
      * @ORM\JoinColumn(nullable=false)
      */
     private $player;
@@ -40,6 +41,16 @@ class Offer
      * @ORM\Column(name="price", type="float")
      */
     private $price;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Customer", mappedBy="offer")
+     */
+    private $customers;
+
+    public function __construct()
+    {
+        $this->customers = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -121,5 +132,22 @@ class Offer
     public function getPlayer()
     {
         return $this->player;
+    }
+
+    public function addCustomer(Customer $customer)
+    {
+        $this->customers[] = $customer;
+
+        return $this;
+    }
+
+    public function removeCustomer(Customer $customer)
+    {
+        $this->customers->removeElement($customer);
+    }
+
+    public function getCustomers()
+    {
+        return $this->customers;
     }
 }

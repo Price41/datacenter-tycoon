@@ -22,7 +22,7 @@ class Customer
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Offer")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Offer", inversedBy="customers")
      * @ORM\JoinColumn(nullable=false)
      */
     private $offer;

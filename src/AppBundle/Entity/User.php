@@ -67,10 +67,16 @@ class User implements UserInterface, \Serializable
      */
     private $datacenters;
 
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Offer", mappedBy="player")
+     */
+    private $offers;
+
     public function __construct()
     {
         $this->isActive = true;
         $this->datacenters = new ArrayCollection();
+        $this->offers = new ArrayCollection();
     }
 
     public function getUsername()
@@ -226,5 +232,22 @@ class User implements UserInterface, \Serializable
     public function getDatacenters()
     {
         return $this->datacenters;
+    }
+
+    public function addOffer(Offer $offer)
+    {
+        $this->offers[] = $offer;
+
+        return $this;
+    }
+
+    public function removeOffer(Offer $offer)
+    {
+        $this->offers->removeElement($offer);
+    }
+
+    public function getOffers()
+    {
+        return $this->offers;
     }
 }
