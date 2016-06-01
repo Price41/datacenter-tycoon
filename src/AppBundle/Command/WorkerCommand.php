@@ -99,12 +99,23 @@ class WorkerCommand extends ContainerAwareCommand
 
                     if($date->format('d') == $date->format('t') && $lastIncomeDate != $date->format('Y-m-d'))
                     {
+                        $serversIncome = 0;
+                        foreach ($user->getOffers() as $offer)
+                        {
+                            foreach ($offer->getCustomers() as $customer)
+                            {
+                                $serversIncome += $offer->getPrice() * $customer->getQuantity();
+                            }
+                        }
+                        
                         $electricityCost = round($datacenter->getTypeElectricity()->getKwhCost() * $kwh, 2);
+
                         $userData['income'] = [
                             "kwh_used" => $kwh,
-                            "electricity_cost" => $electricityCost
+                            "electricity_cost" => $electricityCost,
+                            "servers_income" => $serversIncome
                         ];
-                        $user->setBalance($user->getBalance() - $electricityCost);
+                        $user->setBalance($user->getBalance() - $electricityCost + $serversIncome);
                         $em->flush();
                         $predis->set('dc'.$datacenter->getId().'_kwh', 0);
                     }
