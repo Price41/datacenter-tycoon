@@ -99,7 +99,7 @@ class WorkerCommand extends ContainerAwareCommand
 
                     if($date->format('d') == $date->format('t') && $lastIncomeDate != $date->format('Y-m-d'))
                     {
-                        $electricityCost = $datacenter->getTypeElectricity()->getKwhCost() * $kwh;
+                        $electricityCost = round($datacenter->getTypeElectricity()->getKwhCost() * $kwh, 2);
                         $userData['income'] = [
                             "kwh_used" => $kwh,
                             "electricity_cost" => $electricityCost
