@@ -109,13 +109,15 @@ class WorkerCommand extends ContainerAwareCommand
                         }
 
                         $electricityCost = round($datacenter->getTypeElectricity()->getKwhCost() * $kwh, 2);
+                        $internetCost = $datacenter->getTypeInternet()->getMonthlyCost();
 
                         $userData['income'] = [
                             "kwh_used" => $kwh,
                             "electricity_cost" => $electricityCost,
+                            "internet_cost" => $internetCost,
                             "servers_income" => $serversIncome
                         ];
-                        $user->setBalance($user->getBalance() - $electricityCost + $serversIncome);
+                        $user->setBalance($user->getBalance() - $electricityCost - $internetCost + $serversIncome);
                         $em->flush();
                         $predis->set('dc'.$datacenter->getId().'_kwh', 0);
                     }
