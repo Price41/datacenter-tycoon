@@ -107,7 +107,7 @@ class WorkerCommand extends ContainerAwareCommand
                                 $serversIncome += $offer->getPrice() * $customer->getQuantity();
                             }
                         }
-                        
+
                         $electricityCost = round($datacenter->getTypeElectricity()->getKwhCost() * $kwh, 2);
 
                         $userData['income'] = [
@@ -135,7 +135,10 @@ class WorkerCommand extends ContainerAwareCommand
             }
 
             $timeEnd = microtime(true);
-            usleep(1000000 - ($timeEnd - $timeStart) * 1000000);
+            $timeToSleep = 1000000 - ($timeEnd - $timeStart) * 1000000;
+            if($timeToSleep > 0) {
+                usleep($timeToSleep);
+            }
             $timeEndSleep = microtime(true);
 
             if ($output->isVerbose())
