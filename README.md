@@ -15,7 +15,7 @@ Warning : This game is a Work In Progress !
 * Redis
 
 ## Hosted version
-[http://dctycoon.antoine-a.tk](http://dctycoon.antoine-a.tk) IPv6 only for now
+[http://dctycoon.antoine-a.tk](http://dctycoon.antoine-a.tk)
 
 ## Screenshot
 ![Dashboard](docs/dashboard.png)
