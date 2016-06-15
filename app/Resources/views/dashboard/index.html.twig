@@ -91,7 +91,7 @@ gauges[{{ datacenter.id }}]['wan'] = new JustGage({
 {% endfor %}
 
 
-var webSocket = WS.connect("wss://{{ ws_server_ip }}:8443");
+var webSocket = WS.connect("wss://{{ ws_server_ip }}:{{ wss_server_port }}");
 
 webSocket.on("socket/connect", function(session){
     console.log("Successfully Connected!");
@@ -102,6 +102,13 @@ webSocket.on("socket/connect", function(session){
 
         document.getElementById("date").innerHTML = data.date;
         document.getElementById("balance").innerHTML = data.balance;
+
+        if(data.income != undefined) {
+            document.getElementById("infomsgbox_text").innerHTML = "Electricity cost : " + data.income.electricity_cost + "€ <br/>" +
+                "Internet cost : " + data.income.internet_cost + "€ <br/>" +
+                "Servers income : " + data.income.servers_income + "€";
+            document.getElementById("infomsgbox").style.display = "block";
+        }
 
         for (var dcKey in data.datacenters) {
             document.getElementById("datacenter"+dcKey+"_powerUsage").innerHTML = data.datacenters[dcKey].power_usage;
