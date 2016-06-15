@@ -7,6 +7,12 @@
     </button>
     <strong>Error: </strong> Could not connect to the WebSocket server !
 </div>
+<div id="infomsgbox" class="alert alert-info alert-dismissible fade in" role="alert" style="display: none;">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <span id="infomsgbox_text"></span>
+</div>
 <h1>Dashboard</h1>
 <p>Date : <span id="date"></span></p>
 <p>
@@ -85,7 +91,7 @@ gauges[{{ datacenter.id }}]['wan'] = new JustGage({
 {% endfor %}
 
 
-var webSocket = WS.connect("ws://{{ ws_server_ip }}:{{ ws_server_port }}");
+var webSocket = WS.connect("wss://{{ ws_server_ip }}:8443");
 
 webSocket.on("socket/connect", function(session){
     console.log("Successfully Connected!");
@@ -117,7 +123,7 @@ webSocket.on("socket/connect", function(session){
 webSocket.on("socket/disconnect", function(error){
     console.log("Disconnected for " + error.reason + " with code " + error.code);
     document.getElementById("errormsgbox").style.display = "block";
-    window.setTimeout(function() { $("#errormsgbox").alert('close'); }, 5000);
+    window.setTimeout(function() { $("#errormsgbox").alert('close'); }, 10000);
 })
 
 var rackLoaded = false;

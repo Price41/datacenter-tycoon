@@ -4,8 +4,8 @@
 parameters:
     database_host:     127.0.0.1
     database_port:     ~
-    database_name:     symfony
-    database_user:     root
+    database_name:     dctycoon
+    database_user:     dctycoon
     database_password: ~
     # You should uncomment this if you want use pdo_sqlite
     # database_path: "%kernel.root_dir%/data.db3"
@@ -17,6 +17,7 @@ parameters:
 
     ws_server_ip:   ~
     ws_server_port: 8080
+    wss_server_port: 8443
 
     session_memcached_host:     127.0.0.1
     session_memcached_port:     11211
