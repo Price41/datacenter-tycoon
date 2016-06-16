@@ -112,10 +112,11 @@ class WorkerCommand extends ContainerAwareCommand
                         $internetCost = $datacenter->getTypeInternet()->getMonthlyCost();
 
                         $userData['income'] = [
-                            "kwh_used" => $kwh,
+                            "kwh_used" => round($kwh, 3),
                             "electricity_cost" => $electricityCost,
                             "internet_cost" => $internetCost,
-                            "servers_income" => $serversIncome
+                            "servers_income" => $serversIncome,
+                            "balance_delta" => $serversIncome - $electricityCost - $internetCost
                         ];
                         $user->setBalance($user->getBalance() - $electricityCost - $internetCost + $serversIncome);
                         $em->flush();

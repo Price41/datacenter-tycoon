@@ -11,6 +11,7 @@
     <button type="button" class="close" data-hide="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
+    <strong>Income and expenses:</strong><br/>
     <span id="infomsgbox_text"></span>
 </div>
 <h1>Dashboard</h1>
@@ -105,9 +106,12 @@ webSocket.on("socket/connect", function(session){
         document.getElementById("balance").innerHTML = data.balance;
 
         if(data.income != undefined) {
-            document.getElementById("infomsgbox_text").innerHTML = "Electricity cost : " + data.income.electricity_cost + "€ <br/>" +
+            var sign = (data.income.balance_delta >= 0) ? "+" : "";
+            var color = (data.income.balance_delta >= 0) ? "green" : "red";
+            document.getElementById("infomsgbox_text").innerHTML = "Electricity cost : " + data.income.electricity_cost + "€ (" + data.income.kwh_used + " kWh used)<br/>" +
                 "Internet cost : " + data.income.internet_cost + "€ <br/>" +
-                "Servers income : " + data.income.servers_income + "€";
+                "Servers income : " + data.income.servers_income + "€ <br/>" +
+                "Balance : <strong style=\"color:"+color+";\">" + sign + data.income.balance_delta + "€</srong>";
             document.getElementById("infomsgbox").style.display = "block";
         }
 
