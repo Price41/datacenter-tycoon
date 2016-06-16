@@ -24,7 +24,7 @@ class DashboardController extends Controller
         return $this->render('dashboard/index.html.twig', array(
             'datacenters' => $datacenters,
             'ws_server_ip' => $this->getParameter('ws_server_ip'),
-            'ws_server_port' => $this->getParameter('ws_server_port')
+            'wss_server_port' => $this->getParameter('wss_server_port')
         ));
     }
 }
