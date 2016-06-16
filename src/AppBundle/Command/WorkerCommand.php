@@ -84,6 +84,25 @@ class WorkerCommand extends ContainerAwareCommand
                         $datacenterData['racks'][$rack->getId()] = $rackData;
                     }
 
+                    /* If the bandwidth used by DC servers is greater than the DC Internet max bandwidth
+                       Limit wan usage for each server proportionally to their original wan usage */
+                    $maxDCBandwidth = $datacenter->getTypeInternet()->getSpeed();
+                    if($datacenterData['wan_usage'] > $maxDCBandwidth) {
+                        $delta = $datacenterData['wan_usage'] - $maxDCBandwidth;
+                        foreach ($datacenter->getRacks() as $rack)
+                        {
+                            foreach ($rack->getServers() as $server)
+                            {
+                                $serverData = $datacenterData['racks'][$rack->getId()]['servers'][$server->getId()];
+                                $originalWanUsage = $serverData['wan_usage'];
+                                $newWanUsage = $originalWanUsage - ($originalWanUsage / $datacenterData['wan_usage']) * $delta;
+                                $datacenterData['racks'][$rack->getId()]['servers'][$server->getId()]["wan_usage"] = number_format($newWanUsage, 1);
+
+                            }
+                        }
+                        $datacenterData['wan_usage'] = $maxDCBandwidth;
+                    }
+
                     // kWh used in 10 minutes
                     $kwh = $datacenterData['power_usage'] * (10/60) / 1000;
                     if($predis->exists('dc'.$datacenter->getId().'_kwh'))
