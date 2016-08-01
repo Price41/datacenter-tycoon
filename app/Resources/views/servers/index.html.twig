@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<h1>Buy a server</h1>
+{% for type_server in type_servers %}
+<p>
+    Server name : <strong>{{ type_server.name }}</strong> <br>
+    Number of CPUs : {{ type_server.cpuNumber }} <br>
+    Cores per CPU : {{ type_server.cpuCores }} <br>
+    Theads per core (Hyper Threading) : {{ type_server.cpuHT }} <br>
+    CPU frequency : {{ type_server.cpuFreq }} Mhz <br>
+    RAM quantity : {{ type_server.ram }} Go <br>
+    HDD capacity : {{ type_server.hdd }} Go <br>
+    Power consumption : {{ type_server.consumption }} W <br>
+    Height : {{ type_server.height }}U <br>
+    <a class="btn btn-primary" role="button" href="{{ path('servers_buy', {'name': type_server.name }) }}">Buy {{ type_server.name }} ({{ type_server.buyingCost }} €)</a>
+</p>
+{% endfor %}
+
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}
