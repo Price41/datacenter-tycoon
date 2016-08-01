@@ -44,6 +44,7 @@ class WorkerCommand extends ContainerAwareCommand
             $date->add(new \DateInterval('PT10M'));
             $predis->set('date', $date->format('Y-m-d H:i:s'));
 
+            $em->clear();
             $users = $em->getRepository('AppBundle:User')->findAll();
             foreach ($users as $user)
             {
