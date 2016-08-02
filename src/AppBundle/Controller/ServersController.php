@@ -6,6 +6,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
+use AppBundle\Entity\Customer;
 use AppBundle\Entity\Server;
 
 class ServersController extends Controller
@@ -63,6 +64,15 @@ class ServersController extends Controller
             $server->setUsageWan(0);
             $server->setRack($rack);
             $em->persist($server);
+
+            $offer = $em->getRepository('AppBundle:Offer')->findOneByTypeServer($typeServer);
+
+            $customer = new Customer();
+            $customer->setOffer($offer);
+            $customer->setName('John Doe');
+            $customer->setQuantity(1);
+            $customer->setSubscriptionDate(new \DateTime('now'));
+            $em->persist($customer);
 
             $user->setBalance($user->getBalance() - $typeServer->getBuyingCost());
             $em->flush();

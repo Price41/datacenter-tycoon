@@ -29,6 +29,12 @@ class Offer
     private $player;
 
     /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\TypeServer")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $typeServer;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
@@ -60,6 +66,30 @@ class Offer
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set typeServer
+     *
+     * @param \AppBundle\Entity\TypeServer $typeServer
+     *
+     * @return Offer
+     */
+    public function setTypeServer(\AppBundle\Entity\TypeServer $typeServer)
+    {
+        $this->typeServer = $typeServer;
+
+        return $this;
+    }
+
+    /**
+     * Get typeServer
+     *
+     * @return \AppBundle\Entity\TypeServer
+     */
+    public function getTypeServer()
+    {
+        return $this->typeServer;
     }
 
     /**

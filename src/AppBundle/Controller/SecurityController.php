@@ -86,8 +86,16 @@ class SecurityController extends Controller
 
             $offer = new Offer();
             $offer->setPlayer($user);
+            $offer->setTypeServer($em->getRepository('AppBundle:TypeServer')->findOneByName('XS'));
             $offer->setName('Dedicated XS');
             $offer->setPrice(40);
+            $em->persist($offer);
+
+            $offer = new Offer();
+            $offer->setPlayer($user);
+            $offer->setTypeServer($em->getRepository('AppBundle:TypeServer')->findOneByName('S'));
+            $offer->setName('Dedicated S');
+            $offer->setPrice(70);
             $em->persist($offer);
 
             $customer = new Customer();
