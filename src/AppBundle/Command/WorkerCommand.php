@@ -113,9 +113,9 @@ class WorkerCommand extends ContainerAwareCommand
                     }
                     $predis->set('dc'.$datacenter->getId().'_kwh', $kwh);
 
-                    $datacenterData['power_usage'] = number_format($datacenterData['power_usage']);
+                    $datacenterData['power_usage'] = number_format($datacenterData['power_usage'], 0, '.', '');
                     $datacenterData['kwh'] = number_format($kwh, 3);
-                    $datacenterData['wan_usage'] = number_format($datacenterData['wan_usage'], 1);
+                    $datacenterData['wan_usage'] = number_format($datacenterData['wan_usage'], 1, '.', '');
 
                     if($date->format('d') == $date->format('t') && $lastIncomeDate != $date->format('Y-m-d'))
                     {
