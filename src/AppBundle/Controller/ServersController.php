@@ -65,7 +65,14 @@ class ServersController extends Controller
             $server->setRack($rack);
             $em->persist($server);
 
-            $offer = $em->getRepository('AppBundle:Offer')->findOneByTypeServer($typeServer);
+            $offers = $user->getOffers();
+            $offer = null;
+            foreach ($offers as $o) {
+                if($o->getTypeServer() == $typeServer) {
+                    $offer = $o;
+                    break;
+                }
+            }
 
             $customer = new Customer();
             $customer->setOffer($offer);

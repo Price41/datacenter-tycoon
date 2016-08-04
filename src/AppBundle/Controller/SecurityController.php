@@ -84,22 +84,22 @@ class SecurityController extends Controller
                 $em->persist($server);
             }
 
-            $offer = new Offer();
-            $offer->setPlayer($user);
-            $offer->setTypeServer($em->getRepository('AppBundle:TypeServer')->findOneByName('XS'));
-            $offer->setName('Dedicated XS');
-            $offer->setPrice(40);
-            $em->persist($offer);
+            $offerXS = new Offer();
+            $offerXS->setPlayer($user);
+            $offerXS->setTypeServer($em->getRepository('AppBundle:TypeServer')->findOneByName('XS'));
+            $offerXS->setName('Dedicated XS');
+            $offerXS->setPrice(40);
+            $em->persist($offerXS);
 
-            $offer = new Offer();
-            $offer->setPlayer($user);
-            $offer->setTypeServer($em->getRepository('AppBundle:TypeServer')->findOneByName('S'));
-            $offer->setName('Dedicated S');
-            $offer->setPrice(70);
-            $em->persist($offer);
+            $offerS = new Offer();
+            $offerS->setPlayer($user);
+            $offerS->setTypeServer($em->getRepository('AppBundle:TypeServer')->findOneByName('S'));
+            $offerS->setName('Dedicated S');
+            $offerS->setPrice(70);
+            $em->persist($offerS);
 
             $customer = new Customer();
-            $customer->setOffer($offer);
+            $customer->setOffer($offerXS);
             $customer->setName('John Doe');
             $customer->setQuantity(2);
             $customer->setSubscriptionDate(new \DateTime('now'));
