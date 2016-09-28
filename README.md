@@ -14,8 +14,5 @@ Warning : This game is a Work In Progress !
 * Make sure that the parameter ```session.cookie_domain``` is correctly set in your php.ini file.
 * Redis
 
-## Hosted version
-[http://dctycoon.antoine-a.tk](http://dctycoon.antoine-a.tk)
-
 ## Screenshot
 ![Dashboard](docs/dashboard.png)
